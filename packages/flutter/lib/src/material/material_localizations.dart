@@ -30,6 +30,7 @@
 library;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/material/duration.dart';
 import 'package:flutter/widgets.dart';
 
 import 'debug.dart';
@@ -264,6 +265,17 @@ abstract class MaterialLocalizations {
   /// passed from [MediaQueryData.alwaysUse24HourFormat], which has platform-
   /// specific behavior.
   String formatTimeOfDay(TimeOfDay timeOfDay, {bool alwaysUse24HourFormat = false});
+
+  /// Formats [Duration.hour] in the given time of day according to the value
+  /// of [DurationFormat].
+  String formatDurationHour(Duration duration);
+
+  /// Formats [Duration.minute] in the given time of day according to the value
+  /// of [durationFormat].
+  String formatDurationMinute(Duration duration);
+
+  /// Formats [duration] according to the value of [durationFormat].
+  String formatDuration(Duration duration);
 
   /// Full unabbreviated year format, e.g. 2017 rather than 17.
   String formatYear(DateTime date);
@@ -838,6 +850,11 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
     }
   }
 
+  @override
+  String formatDurationHour(Duration duration) {
+    return _formatTwoDigitZeroPad(duration.hour);
+  }
+
   /// Formats [number] using two digits, assuming it's in the 0-99 inclusive
   /// range. Not designed to format values outside this range.
   String _formatTwoDigitZeroPad(int number) {
@@ -853,6 +870,12 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   @override
   String formatMinute(TimeOfDay timeOfDay) {
     final int minute = timeOfDay.minute;
+    return minute < 10 ? '0$minute' : minute.toString();
+  }
+
+  @override
+  String formatDurationMinute(Duration duration) {
+    final int minute = duration.minute;
     return minute < 10 ? '0$minute' : minute.toString();
   }
 
@@ -1067,6 +1090,19 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
     buffer
       ..write(' ')
       ..write(_formatDayPeriod(timeOfDay));
+    return '$buffer';
+  }
+
+  @override
+  String formatDuration(Duration duration) {
+    final StringBuffer buffer = StringBuffer();
+
+    // Add hour:minute.
+    buffer
+      ..write(formatDurationHour(duration))
+      ..write(':')
+      ..write(formatDurationMinute(duration));
+
     return '$buffer';
   }
 
