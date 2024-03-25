@@ -231,6 +231,12 @@ abstract class MaterialLocalizations {
   /// each supported layout.
   TimeOfDayFormat timeOfDayFormat({bool alwaysUse24HourFormat = false});
 
+  /// The format used to lay out the duration picker.
+  ///
+  /// The documentation for [DurationFormat] enum values provides details on
+  /// each supported layout.
+  DurationFormat durationFormat();
+
   /// Defines the localized [TextStyle] geometry for [ThemeData.textTheme].
   ///
   /// The [scriptCategory] defines the overall geometry of a [TextTheme] for
@@ -1283,6 +1289,11 @@ class DefaultMaterialLocalizations implements MaterialLocalizations {
   @override
   TimeOfDayFormat timeOfDayFormat({bool alwaysUse24HourFormat = false}) {
     return alwaysUse24HourFormat ? TimeOfDayFormat.HH_colon_mm : TimeOfDayFormat.h_colon_mm_space_a;
+  }
+
+  @override
+  DurationFormat durationFormat() {
+    return DurationFormat.HH_colon_mm;
   }
 
   @override
