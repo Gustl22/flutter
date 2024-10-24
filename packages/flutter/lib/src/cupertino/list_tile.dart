@@ -2,6 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/// @docImport 'package:flutter/material.dart';
+///
+/// @docImport 'button.dart';
+/// @docImport 'list_section.dart';
+/// @docImport 'switch.dart';
+library;
+
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
@@ -62,6 +69,13 @@ enum _CupertinoListTileType { base, notched }
 /// list tile. This can be used to navigate routes and according to iOS
 /// behavior it should not be used for example to toggle the [CupertinoSwitch]
 /// in the trailing widget.
+///
+/// {@tool dartpad}
+/// This example uses a [ListView] to demonstrate different configurations of
+/// [CupertinoListTile]s.
+///
+/// ** See code in examples/api/lib/cupertino/list_tile/cupertino_list_tile.0.dart **
+/// {@end-tool}
 ///
 /// See also:
 ///

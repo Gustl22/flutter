@@ -12,18 +12,33 @@ enum CompileTarget {
 }
 
 sealed class WebCompilerConfig {
-  const WebCompilerConfig({required this.renderer, required this.optimizationLevel});
-
-  /// The default optimization level for dart2js/dart2wasm.
-  static const int kDefaultOptimizationLevel = 4;
-
+  const WebCompilerConfig({required this.renderer,
+                           this.optimizationLevel,
+                           required this.sourceMaps});
   /// Build environment flag for [optimizationLevel].
   static const String kOptimizationLevel = 'OptimizationLevel';
 
-  /// The compiler optimization level.
+  /// Build environment flag for [sourceMaps].
+  static const String kSourceMapsEnabled = 'SourceMaps';
+
+  /// Calculates the optimization level for dart2js/dart2wasm for the given
+  /// build mode.
+  int optimizationLevelForBuildMode(BuildMode mode) =>
+    optimizationLevel ?? switch (mode) {
+      BuildMode.debug => 0,
+      BuildMode.profile || BuildMode.release => 4,
+      BuildMode.jitRelease => throw ArgumentError('Invalid build mode for web'),
+    };
+
+  /// The compiler optimization level specified by the user.
   ///
   /// Valid values are O0 (lowest, debug default) to O4 (highest, release default).
-  final int optimizationLevel;
+  /// If the value is null, the user hasn't specified an optimization level and an
+  /// appropriate default for the build mode will be used instead.
+  final int? optimizationLevel;
+
+  /// `true` if the compiler build should output source maps.
+  final bool sourceMaps;
 
   /// Returns which target this compiler outputs (js or wasm)
   CompileTarget get compileTarget;
@@ -32,7 +47,7 @@ sealed class WebCompilerConfig {
   String get buildKey;
 
   Map<String, Object> get buildEventAnalyticsValues => <String, Object>{
-    'optimizationLevel': optimizationLevel,
+    if (optimizationLevel != null) 'optimizationLevel': optimizationLevel!,
   };
 
 
@@ -48,10 +63,10 @@ class JsCompilerConfig extends WebCompilerConfig {
     this.csp = false,
     this.dumpInfo = false,
     this.nativeNullAssertions = false,
-    super.optimizationLevel = WebCompilerConfig.kDefaultOptimizationLevel,
+    super.optimizationLevel,
     this.noFrequencyBasedMinification = false,
-    this.sourceMaps = true,
-    super.renderer = WebRendererMode.auto,
+    super.sourceMaps = true,
+    super.renderer = WebRendererMode.defaultForJs,
   });
 
   /// Instantiates [JsCompilerConfig] suitable for the `flutter run` command.
@@ -60,7 +75,6 @@ class JsCompilerConfig extends WebCompilerConfig {
     required WebRendererMode renderer,
   }) : this(
           nativeNullAssertions: nativeNullAssertions,
-          optimizationLevel: WebCompilerConfig.kDefaultOptimizationLevel ,
           renderer: renderer,
         );
 
@@ -73,9 +87,6 @@ class JsCompilerConfig extends WebCompilerConfig {
 
   /// Build environment flag for [csp].
   static const String kCspMode = 'cspMode';
-
-  /// Build environment flag for [sourceMaps].
-  static const String kSourceMapsEnabled = 'SourceMaps';
 
   /// Build environment flag for [nativeNullAssertions].
   static const String kNativeNullAssertions = 'NativeNullAssertions';
@@ -93,26 +104,33 @@ class JsCompilerConfig extends WebCompilerConfig {
   // TODO(kevmoo): consider renaming this to be "positive". Double negatives are confusing.
   final bool noFrequencyBasedMinification;
 
-  /// `true` if the JavaScript compiler build should output source maps.
-  final bool sourceMaps;
-
   @override
   CompileTarget get compileTarget => CompileTarget.js;
 
   /// Arguments to use in both phases: full JS compile and CFE-only.
-  List<String> toSharedCommandOptions() => <String>[
+  List<String> toSharedCommandOptions(BuildMode buildMode) => <String>[
         if (nativeNullAssertions) '--native-null-assertions',
         if (!sourceMaps) '--no-source-maps',
+        if (buildMode == BuildMode.debug) '--enable-asserts',
       ];
+
+  @override
+  int optimizationLevelForBuildMode(BuildMode mode) {
+    final int level = super.optimizationLevelForBuildMode(mode);
+
+    // dart2js optimization level 0 is not well supported. Use
+    // 1 instead.
+    return level == 0 ? 1 : level;
+  }
 
   /// Arguments to use in the full JS compile, but not CFE-only.
   ///
   /// Includes the contents of [toSharedCommandOptions].
   List<String> toCommandOptions(BuildMode buildMode) => <String>[
-        if (buildMode == BuildMode.profile) '--no-minify',
-        ...toSharedCommandOptions(),
-        '-O$optimizationLevel',
-        if (dumpInfo) '--dump-info',
+        if (buildMode != BuildMode.release) '--no-minify',
+        ...toSharedCommandOptions(buildMode),
+        '-O${optimizationLevelForBuildMode(buildMode)}',
+        if (dumpInfo) '--stage=dump-info-all',
         if (noFrequencyBasedMinification) '--no-frequency-based-minification',
         if (csp) '--csp',
       ];
@@ -134,9 +152,10 @@ class JsCompilerConfig extends WebCompilerConfig {
 /// Configuration for the Wasm compiler.
 class WasmCompilerConfig extends WebCompilerConfig {
   const WasmCompilerConfig({
-    super.optimizationLevel = WebCompilerConfig.kDefaultOptimizationLevel,
+    super.optimizationLevel,
     this.stripWasm = true,
-    super.renderer = WebRendererMode.auto,
+    super.sourceMaps = true,
+    super.renderer = WebRendererMode.defaultForWasm,
   });
 
   /// Build environment for [stripWasm].
@@ -151,8 +170,10 @@ class WasmCompilerConfig extends WebCompilerConfig {
   List<String> toCommandOptions(BuildMode buildMode) {
     final bool stripSymbols = buildMode == BuildMode.release && stripWasm;
     return <String>[
-      '-O$optimizationLevel',
-      '--${stripSymbols ? 'no-' : ''}name-section',
+      '-O${optimizationLevelForBuildMode(buildMode)}',
+      '--${stripSymbols ? '' : 'no-'}strip-wasm',
+      if (!sourceMaps) '--no-source-maps',
+      if (buildMode == BuildMode.debug) '--extra-compiler-option=--enable-asserts',
     ];
   }
 
@@ -161,6 +182,7 @@ class WasmCompilerConfig extends WebCompilerConfig {
     final Map<String, dynamic> settings = <String, dynamic>{
       ...super._buildKeyMap,
       'stripWasm': stripWasm,
+      'sourceMaps': sourceMaps,
     };
     return jsonEncode(settings);
   }

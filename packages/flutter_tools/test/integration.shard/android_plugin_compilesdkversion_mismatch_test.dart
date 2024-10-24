@@ -54,7 +54,7 @@ void main() {
 
     final Directory pluginExampleAppDir = pluginAppDir.childDirectory('example');
 
-    final File projectGradleFile = pluginExampleAppDir.childDirectory('android').childDirectory('app').childFile('build.gradle');
+    final File projectGradleFile = pluginExampleAppDir.childDirectory('android').childDirectory('app').childFile('build.gradle.kts');
     expect(projectGradleFile, exists);
 
     final String projectBuildGradle = projectGradleFile.readAsStringSync();
@@ -75,16 +75,20 @@ void main() {
 
     // Check error message is thrown
     expect(
-        result.stdout,
+        result.stderr,
         contains(
-            'Warning: The plugin test_plugin requires Android SDK version 31 or higher.'));
+            'Your project is configured to compile against Android SDK 30, but '
+            'the following plugin(s) require to be compiled against a higher Android SDK version:'));
     expect(
       result.stderr,
-      contains('One or more plugins require a higher Android SDK version.'),
+      contains('- test_plugin compiles against Android SDK 31'),
     );
     expect(
         result.stderr,
         contains(
-            'Fix this issue by adding the following to ${projectGradleFile.path}'));
+            'Fix this issue by compiling against the highest Android SDK version (they are backward compatible).'));
+    expect(
+        result.stderr,
+        contains('Add the following to ${projectGradleFile.path}:'));
   });
 }

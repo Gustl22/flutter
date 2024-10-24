@@ -129,7 +129,7 @@ class PubDependencies extends ArtifactSet {
         fileSystem.directory(fileSystem.path.join(_flutterRoot(), 'packages', 'flutter_tools'))
       ),
       offline: offline,
-      outputMode: PubOutputMode.none,
+      outputMode: PubOutputMode.failuresOnly,
     );
   }
 }
@@ -231,7 +231,7 @@ class FlutterSdk extends EngineCachedArtifact {
   final Platform _platform;
 
   @override
-  List<String> getPackageDirs() => const <String>['sky_engine'];
+  List<String> getPackageDirs() => const <String>['sky_engine', 'flutter_gpu'];
 
   @override
   List<List<String>> getBinaryDirs() {
@@ -801,11 +801,9 @@ class IosUsbArtifacts extends CachedArtifact {
   };
 
   @override
-  Map<String, String> get environment {
-    return <String, String>{
-      'DYLD_LIBRARY_PATH': cache.getArtifactDirectory(name).path,
-    };
-  }
+  Map<String, String> get environment => <String, String>{
+    'DYLD_LIBRARY_PATH': cache.getArtifactDirectory(name).path,
+  };
 
   @override
   bool isUpToDateInner(FileSystem fileSystem) {

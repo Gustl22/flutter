@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/// @docImport 'card_theme.dart';
+/// @docImport 'data_table_theme.dart';
+/// @docImport 'text_button.dart';
+library;
+
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart' show DragStartBehavior;
@@ -21,7 +26,9 @@ import 'material_state.dart';
 import 'progress_indicator.dart';
 import 'theme.dart';
 
-/// A Material Design data table that shows data using multiple pages.
+/// A table that follows the
+/// [Material 2](https://material.io/go/design-data-tables)
+/// design specification, using multiple pages to display data.
 ///
 /// A paginated data table shows [rowsPerPage] rows of data per page and
 /// provides controls for showing other pages.
@@ -52,7 +59,10 @@ import 'theme.dart';
 /// See also:
 ///
 ///  * [DataTable], which is not paginated.
-///  * <https://material.io/go/design-data-tables#data-tables-tables-within-cards>
+///  * `TableView` from the
+///    [two_dimensional_scrollables](https://pub.dev/packages/two_dimensional_scrollables)
+///    package, for displaying large amounts of data without pagination.
+///  * <https://material.io/go/design-data-tables>
 class PaginatedDataTable extends StatefulWidget {
   /// Creates a widget describing a paginated [DataTable] on a [Card].
   ///
@@ -112,6 +122,7 @@ class PaginatedDataTable extends StatefulWidget {
     this.controller,
     this.primary,
     this.headingRowColor,
+    this.dividerThickness,
     this.showEmptyRows = true,
   }) : assert(actions == null || (header != null)),
        assert(columns.isNotEmpty),
@@ -122,6 +133,7 @@ class PaginatedDataTable extends StatefulWidget {
        dataRowMinHeight = dataRowHeight ?? dataRowMinHeight,
        dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight,
        assert(rowsPerPage > 0),
+       assert(dividerThickness == null || dividerThickness >= 0),
        assert(() {
          if (onRowsPerPageChanged != null) {
            assert(availableRowsPerPage.contains(rowsPerPage));
@@ -228,6 +240,13 @@ class PaginatedDataTable extends StatefulWidget {
 
   /// The index of the first row to display when the widget is first created.
   final int? initialFirstRowIndex;
+
+
+  /// {@macro flutter.material.dataTable.dividerThickness}
+  ///
+  /// If null, [DataTableThemeData.dividerThickness] is used. This value
+  /// defaults to 1.0.
+  final double? dividerThickness;
 
   /// Invoked when the user switches to another page.
   ///
@@ -490,7 +509,8 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
         })
         .toList();
       footerWidgets.addAll(<Widget>[
-        Container(width: 14.0), // to match trailing padding in case we overflow and end up scrolling
+        // Match trailing padding, in case we overflow and end up scrolling.
+        const SizedBox(width: 14.0),
         Text(localizations.rowsPerPageTitle),
         ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 64.0), // 40.0 for the text, 24.0 for the icon
@@ -509,7 +529,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
       ]);
     }
     footerWidgets.addAll(<Widget>[
-      Container(width: 32.0),
+      const SizedBox(width: 32.0),
       Text(
         localizations.pageRowsInfoTitle(
           _firstRowIndex + 1,
@@ -518,7 +538,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
           _rowCountApproximate,
         ),
       ),
-      Container(width: 32.0),
+      const SizedBox(width: 32.0),
       if (widget.showFirstLastButtons)
         IconButton(
           icon: Icon(Icons.skip_previous, color: widget.arrowHeadColor),
@@ -532,7 +552,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
         tooltip: localizations.previousPageTooltip,
         onPressed: _firstRowIndex <= 0 ? null : _handlePrevious,
       ),
-      Container(width: 24.0),
+      const SizedBox(width: 24.0),
       IconButton(
         icon: Icon(Icons.chevron_right, color: widget.arrowHeadColor),
         padding: EdgeInsets.zero,
@@ -548,7 +568,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
               ? null
               : _handleLast,
         ),
-      Container(width: 14.0),
+      const SizedBox(width: 14.0),
     ]);
 
     // CARD
@@ -599,6 +619,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
                     sortColumnIndex: widget.sortColumnIndex,
                     sortAscending: widget.sortAscending,
                     onSelectAll: widget.onSelectAll,
+                    dividerThickness: widget.dividerThickness,
                     // Make sure no decoration is set on the DataTable
                     // from the theme, as its already wrapped in a Card.
                     decoration: const BoxDecoration(),

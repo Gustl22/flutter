@@ -102,6 +102,7 @@ class WebBuilder {
               kServiceWorkerStrategy: serviceWorkerStrategy.cliName,
               ...buildInfo.toBuildSystemEnvironment(),
             },
+            packageConfigPath: buildInfo.packageConfigPath,
             artifacts: globals.artifacts!,
             fileSystem: _fileSystem,
             logger: _logger,
@@ -110,7 +111,7 @@ class WebBuilder {
             usage: _flutterUsage,
             analytics: _analytics,
             cacheDir: globals.cache.getRoot(),
-            engineVersion: globals.artifacts!.isLocalEngine ? null : _flutterVersion.engineRevision,
+            engineVersion: globals.artifacts!.usesLocalArtifacts ? null : _flutterVersion.engineRevision,
             flutterRootDir: _fileSystem.directory(Cache.flutterRoot),
             // Web uses a different Dart plugin registry.
             // https://github.com/flutter/flutter/issues/80406
@@ -185,18 +186,36 @@ enum WebRendererMode implements CliEnum {
   skwasm;
 
   factory WebRendererMode.fromCliOption(String? webRendererString, {required bool useWasm}) {
-    final WebRendererMode mode = webRendererString != null
-      ? WebRendererMode.values.byName(webRendererString)
-      : WebRendererMode.auto;
-    if (mode == WebRendererMode.auto && useWasm) {
-      // Wasm defaults to skwasm
-      return WebRendererMode.skwasm;
+    if (webRendererString == null) {
+      return getDefault(useWasm: useWasm);
     }
-    return mode;
+    return WebRendererMode.values.byName(webRendererString);
   }
 
+  static WebRendererMode getDefault({required bool useWasm}) {
+    return useWasm ? defaultForWasm : defaultForJs;
+  }
+
+  static const WebRendererMode defaultForJs = WebRendererMode.canvaskit;
+  static const WebRendererMode defaultForWasm = WebRendererMode.skwasm;
+
+  /// Returns whether the WebRendererMode is considered deprecated or not.
+  ///
+  /// Deprecated modes: auto, html.
+  bool get isDeprecated => switch (this) {
+        auto => true,
+        canvaskit => false,
+        html => true,
+        skwasm => false
+      };
+
+  /// Returns a consistent deprecation warning for the WebRendererMode.
+  String get deprecationWarning =>
+    'The HTML Renderer is deprecated. Do not use "--web-renderer=$name".'
+    '\nSee: https://docs.flutter.dev/to/web-html-renderer-deprecation';
+
   @override
-  String get cliName => snakeCase(name, '-');
+  String get cliName => kebabCase(name);
 
   @override
   String get helpText => switch (this) {
@@ -210,22 +229,22 @@ enum WebRendererMode implements CliEnum {
       };
 
   Iterable<String> get dartDefines => switch (this) {
-        WebRendererMode.auto => <String>[
+        auto => <String>[
             'FLUTTER_WEB_AUTO_DETECT=true',
           ],
-        WebRendererMode.canvaskit => <String>[
+        canvaskit => <String>[
             'FLUTTER_WEB_AUTO_DETECT=false',
             'FLUTTER_WEB_USE_SKIA=true',
           ],
-        WebRendererMode.html => <String>[
+        html => <String>[
             'FLUTTER_WEB_AUTO_DETECT=false',
             'FLUTTER_WEB_USE_SKIA=false',
           ],
-        WebRendererMode.skwasm => <String>[
+        skwasm => <String>[
             'FLUTTER_WEB_AUTO_DETECT=false',
             'FLUTTER_WEB_USE_SKIA=false',
             'FLUTTER_WEB_USE_SKWASM=true',
-          ]
+          ],
       };
 
   List<String> updateDartDefines(List<String> inputDefines) {

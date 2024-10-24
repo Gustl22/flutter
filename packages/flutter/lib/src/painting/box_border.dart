@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/// @docImport 'package:flutter/material.dart';
+///
+/// @docImport 'box_decoration.dart';
+library;
+
 import 'package:flutter/foundation.dart';
 
 import 'basic_types.dart';
@@ -113,9 +118,7 @@ abstract class BoxBorder extends ShapeBorder {
       return BorderDirectional.lerp(a, b, t);
     }
     if (b is Border && a is BorderDirectional) {
-      final BoxBorder c = b;
-      b = a;
-      a = c;
+      (a, b) = (b, a);
       t = 1.0 - t;
       // fall through to next case
     }
@@ -460,9 +463,6 @@ class Border extends BoxBorder {
 
   @override
   EdgeInsetsGeometry get dimensions {
-    if (_widthIsUniform) {
-      return EdgeInsets.all(top.strokeInset);
-    }
     return EdgeInsets.fromLTRB(left.strokeInset, top.strokeInset, right.strokeInset, bottom.strokeInset);
   }
 
@@ -800,9 +800,6 @@ class BorderDirectional extends BoxBorder {
 
   @override
   EdgeInsetsGeometry get dimensions {
-    if (isUniform) {
-      return EdgeInsetsDirectional.all(top.strokeInset);
-    }
     return EdgeInsetsDirectional.fromSTEB(start.strokeInset, top.strokeInset, end.strokeInset, bottom.strokeInset);
   }
 

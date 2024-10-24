@@ -115,15 +115,11 @@ class ABTest {
       if (value == null) {
         value = ''.padRight(len);
       } else {
-        switch (aligns[column]) {
-          case FieldJustification.LEFT:
-            value = value.padRight(len);
-          case FieldJustification.RIGHT:
-            value = value.padLeft(len);
-          case FieldJustification.CENTER:
-            value = value.padLeft((len + value.length) ~/2);
-            value = value.padRight(len);
-        }
+        value = switch (aligns[column]) {
+          FieldJustification.LEFT   => value.padRight(len),
+          FieldJustification.RIGHT  => value.padLeft(len),
+          FieldJustification.CENTER => value.padLeft((len + value.length) ~/ 2).padRight(len),
+        };
       }
       if (column > 0) {
         value = value.padLeft(len+1);
@@ -211,12 +207,10 @@ class ABTest {
     return buffer.toString();
   }
 
-  Set<String> get _allScoreKeys {
-    return <String>{
-      ..._aResults.keys,
-      ..._bResults.keys,
-    };
-  }
+  Set<String> get _allScoreKeys => <String>{
+    ..._aResults.keys,
+    ..._bResults.keys,
+  };
 
   /// Returns the summary as a tab-separated spreadsheet.
   ///
