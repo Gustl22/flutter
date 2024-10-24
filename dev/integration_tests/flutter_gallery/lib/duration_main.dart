@@ -33,9 +33,9 @@ class Home extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.access_time),
                   onPressed: () {
