@@ -394,7 +394,7 @@ class _DurationControl extends StatelessWidget {
     TextStyle effectiveStyle = MaterialStateProperty.resolveAs<TextStyle>(
       timePickerTheme.hourMinuteTextStyle ?? defaultTheme.hourMinuteTextStyle,
       states,
-    ).copyWith(color: effectiveTextColor);
+    ).copyWith(color: effectiveTextColor, height: 1.0);
 
     // TODO: only used in dial mode, therefore can remove the other stuff.
     double height = defaultTheme.hourMinuteSize.height;
@@ -572,13 +572,11 @@ class _TimeSelectorSeparator extends StatelessWidget {
       child: SizedBox(
         width: durationFormat == DurationFormat.frenchCanadian ? 36 : 24,
         height: height,
-        // TODO: centering separator correct?
         child: Center(
           child: Text(
             _timeSelectorSeparatorValue(durationFormat),
             style: effectiveStyle,
             textScaler: TextScaler.noScaling,
-            textAlign: TextAlign.center,
           ),
         ),
       ),
@@ -1749,7 +1747,10 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
                           ],
                         ),
                       ),
-                      _TimeSelectorSeparator(durationFormat: durationFormat),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _TimeSelectorSeparator(durationFormat: durationFormat),
+                      ),
                     ],
                     Expanded(
                       child: Column(
