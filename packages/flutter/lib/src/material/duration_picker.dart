@@ -1918,6 +1918,8 @@ class DurationPickerDialog extends StatefulWidget {
     this.durationPickerMode = DurationPickerMode.hms,
     this.orientation,
     this.onEntryModeChanged,
+    this.switchToInputEntryModeIcon,
+    this.switchToTimerEntryModeIcon,
   });
 
   /// The time initially selected when the dialog is shown.
@@ -1983,6 +1985,12 @@ class DurationPickerDialog extends StatefulWidget {
 
   /// Callback called when the selected entry mode is changed.
   final DurationEntryModeChangeCallback? onEntryModeChanged;
+
+  /// {@macro flutter.material.time_picker.switchToInputEntryModeIcon}
+  final Icon? switchToInputEntryModeIcon;
+
+  /// {@macro flutter.material.time_picker.switchToTimerEntryModeIcon}
+  final Icon? switchToTimerEntryModeIcon;
 
   @override
   State<DurationPickerDialog> createState() => _DurationPickerDialogState();
@@ -2175,7 +2183,9 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> with Restor
               color: theme.useMaterial3 ? null : entryModeIconColor,
               style: theme.useMaterial3 ? IconButton.styleFrom(foregroundColor: entryModeIconColor) : null,
               onPressed: _toggleEntryMode,
-              icon: Icon(_entryMode.value == DurationPickerEntryMode.dial ? Icons.keyboard_outlined : Icons.access_time),
+              icon: _entryMode.value == DurationPickerEntryMode.dial
+                  ? widget.switchToInputEntryModeIcon ?? const Icon(Icons.keyboard_outlined)
+                  : widget.switchToTimerEntryModeIcon ?? const Icon(Icons.access_time),
               tooltip: _entryMode.value == DurationPickerEntryMode.dial
                   ? MaterialLocalizations.of(context).inputTimeModeButtonLabel
                   : MaterialLocalizations.of(context).dialModeButtonLabel,
@@ -2266,6 +2276,8 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> with Restor
                           durationPickerMode: widget.durationPickerMode,
                           orientation: widget.orientation,
                           onEntryModeChanged: _handleEntryModeChanged,
+                          switchToInputEntryModeIcon: widget.switchToInputEntryModeIcon,
+                          switchToTimerEntryModeIcon: widget.switchToTimerEntryModeIcon,
                         ),
                       ),
                     ),
@@ -2303,6 +2315,8 @@ class _TimePicker extends StatefulWidget {
     required this.durationPickerMode,
     this.orientation,
     this.onEntryModeChanged,
+    this.switchToInputEntryModeIcon,
+    this.switchToTimerEntryModeIcon,
   });
 
   /// Optionally provide your own text for the help text at the top of the
@@ -2376,6 +2390,12 @@ class _TimePicker extends StatefulWidget {
 
   /// Callback called when the selected entry mode is changed.
   final DurationEntryModeChangeCallback? onEntryModeChanged;
+
+  /// {@macro flutter.material.time_picker.switchToInputEntryModeIcon}
+  final Icon? switchToInputEntryModeIcon;
+
+  /// {@macro flutter.material.time_picker.switchToTimerEntryModeIcon}
+  final Icon? switchToTimerEntryModeIcon;
 
   @override
   State<_TimePicker> createState() => _DurationPickerState();
@@ -2734,6 +2754,22 @@ class _DurationPickerState extends State<_TimePicker> with RestorationMixin {
 /// parameter to override the default and force the dialog to appear in either
 /// portrait or landscape mode.
 ///
+/// {@template flutter.material.time_picker.switchToInputEntryModeIcon}
+/// The optional [switchToInputEntryModeIcon] argument can be used to customize
+/// the input method icon that is shown when the [TimePickerEntryMode]
+/// is [TimePickerEntryMode.dial].
+///
+/// Defaults to an [Icon] widget with [Icons.keyboard_outlined] as icon.
+/// {@endtemplate}
+///
+/// {@template flutter.material.time_picker.switchToTimerEntryModeIcon}
+/// The optional [switchToTimerEntryModeIcon] argument can be used to customize
+/// the input method icon that is shown when the [TimePickerEntryMode]
+/// is [TimePickerEntryMode.input].
+///
+/// Defaults to an [Icon] widget with [Icons.access_time] as icon.
+/// {@endtemplate}
+///
 /// {@macro flutter.widgets.RawDialogRoute}
 ///
 /// By default, the time picker gets its colors from the overall theme's
@@ -2810,6 +2846,8 @@ Future<Duration?> showDurationPicker({
   DurationEntryModeChangeCallback? onEntryModeChanged,
   Offset? anchorPoint,
   Orientation? orientation,
+  Icon? switchToInputEntryModeIcon,
+  Icon? switchToTimerEntryModeIcon,
 }) async {
   assert(debugCheckHasMaterialLocalizations(context));
 
@@ -2825,6 +2863,8 @@ Future<Duration?> showDurationPicker({
     secondLabelText: secondLabelText,
     orientation: orientation,
     onEntryModeChanged: onEntryModeChanged,
+    switchToInputEntryModeIcon: switchToInputEntryModeIcon,
+    switchToTimerEntryModeIcon: switchToTimerEntryModeIcon,
     durationPickerMode: durationPickerMode,
   );
   return showDialog<Duration>(
