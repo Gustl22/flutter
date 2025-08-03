@@ -1912,7 +1912,7 @@ class _DurationTextFieldState extends State<_DurationTextField> with Restoration
     // version yet.
     if (!controllerHasBeenSet.value) {
       controllerHasBeenSet.value = true;
-      controller.value.text = _formattedValue;
+      controller.value.value = TextEditingValue(text: _formattedValue);
     }
   }
 
