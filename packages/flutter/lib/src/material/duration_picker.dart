@@ -1883,6 +1883,12 @@ class _DurationTextFieldState extends State<_DurationTextField> with Restoration
         FocusNode()..addListener(() {
           setState(() {
             // Rebuild when focus changes.
+            if (kIsWeb && focusNode.hasFocus && primaryFocus?.context != null) {
+              Actions.maybeInvoke(
+                primaryFocus!.context!,
+                const SelectAllTextIntent(SelectionChangedCause.keyboard),
+              );
+            }
           });
         });
   }
