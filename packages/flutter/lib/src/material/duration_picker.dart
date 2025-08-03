@@ -1296,8 +1296,10 @@ class _DialState extends State<_Dial> with SingleTickerProviderStateMixin {
             inner: duration.hour >= 12,
             value: duration.hour,
             label:
+                // The M3 specs for 24-hour ring show 0 hour as 00, but for 1-9,
+                // the specs show single digit.
                 duration.hour != 0
-                    ? '${duration.hour}'
+                    ? localizations.formatDecimal(duration.hour)
                     : localizations.formatDurationHour(duration),
             onTap: () {
               _selectHour(duration.hour);
