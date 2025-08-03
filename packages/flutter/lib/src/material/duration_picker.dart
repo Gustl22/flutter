@@ -1937,7 +1937,7 @@ class _DurationTextFieldState extends State<_DurationTextField> with Restoration
     final _TimePickerDefaults defaultTheme =
         theme.useMaterial3 ? _TimePickerDefaultsM3(context) : _TimePickerDefaultsM2(context);
 
-    final InputDecorationTheme inputDecorationTheme =
+    final InputDecorationThemeData inputDecorationTheme =
         timePickerTheme.inputDecorationTheme ?? defaultTheme.inputDecorationTheme;
     InputDecoration inputDecoration = InputDecoration(
       // Prevent the error text from appearing when
@@ -1946,7 +1946,7 @@ class _DurationTextFieldState extends State<_DurationTextField> with Restoration
       // https://github.com/flutter/flutter/issues/54104
       // is fixed.
       errorStyle: defaultTheme.inputDecorationTheme.errorStyle,
-    ).applyDefaults(inputDecorationTheme.data);
+    ).applyDefaults(inputDecorationTheme);
     // Remove the hint text when focused because the centered cursor
     // appears odd above the hint text.
     final String? hintText = focusNode.hasFocus ? null : _formattedValue;
@@ -3142,7 +3142,7 @@ abstract class _TimePickerDefaults extends TimePickerThemeData {
   TextStyle get hourMinuteTextStyle;
 
   @override
-  InputDecorationTheme get inputDecorationTheme;
+  InputDecorationThemeData get inputDecorationTheme;
 
   @override
   EdgeInsetsGeometry get padding;
@@ -3348,8 +3348,8 @@ class _TimePickerDefaultsM2 extends _TimePickerDefaults {
   }
 
   @override
-  InputDecorationTheme get inputDecorationTheme {
-    return InputDecorationTheme(
+  InputDecorationThemeData get inputDecorationTheme {
+    return InputDecorationThemeData(
       contentPadding: EdgeInsets.zero,
       filled: true,
       fillColor: _hourMinuteInputColor,
@@ -3667,7 +3667,7 @@ class _TimePickerDefaultsM3 extends _TimePickerDefaults {
   }
 
   @override
-  InputDecorationTheme get inputDecorationTheme {
+  InputDecorationThemeData get inputDecorationTheme {
     // This is NOT correct, but there's no token for
     // 'time-input.container.shape', so this is using the radius from the shape
     // for the hour/minute selector. It's a BorderRadiusGeometry, so we have to
@@ -3675,7 +3675,7 @@ class _TimePickerDefaultsM3 extends _TimePickerDefaults {
     final BorderRadius selectorRadius = const RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(8.0)),
     ).borderRadius.resolve(Directionality.of(context));
-    return InputDecorationTheme(
+    return InputDecorationThemeData(
       contentPadding: EdgeInsets.zero,
       filled: true,
       // This should be derived from a token, but there isn't one for 'time-input'.
