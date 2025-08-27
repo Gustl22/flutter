@@ -88,7 +88,7 @@ enum DurationPickerEntryMode {
 /// See also:
 ///
 ///  * [DurationPicker], the class that implements the material duration picker.
-/// TODO: should use enum, or a list of enums with {day, hour, minute, second, millisecond, etc., see _DurationMode} ?
+// TODO(Gustl22): should use enum, or a list of enums with {day, hour, minute, second, millisecond, etc., see _DurationMode}, https://github.com/Oberhauser-Dev/dart_packages/issues/38
 enum DurationPickerMode {
   /// Mode that shows the timer duration in hour and minute.
   hm,
@@ -272,7 +272,7 @@ class _DurationPickerModel extends InheritedModel<_DurationPickerAspect> {
   }
 }
 
-/// TODO: only used for dial, should also be renamed in TimePickerHeader to _TimePickerDialHeader
+// TODO(Gustl22): only used for dial, should also be renamed in TimePickerHeader to _TimePickerDialHeader, https://github.com/flutter/flutter/pull/173188
 class _DurationPickerHeader extends StatelessWidget {
   const _DurationPickerHeader({required this.durationPickerMode, required this.helpText});
 
@@ -364,7 +364,7 @@ class _DurationPickerHeader extends StatelessWidget {
   }
 }
 
-/// TODO used in Dial mode only. Also change in TimeOfDay_picker!
+// TODO(Gustl22): used in Dial mode only. Also change in TimeOfDay_picker!, https://github.com/flutter/flutter/pull/173188
 class _DurationControl extends StatelessWidget {
   const _DurationControl({
     required this.text,
@@ -396,10 +396,10 @@ class _DurationControl extends StatelessWidget {
       states,
     ).copyWith(color: effectiveTextColor, height: 1.0);
 
-    // TODO: only used in dial mode, therefore can remove the other stuff.
+    // TODO(Gustl22): only used in dial mode, therefore can remove the other stuff, https://github.com/flutter/flutter/pull/173188
     double height = defaultTheme.hourMinuteSize.height;
 
-    // TODO: check if it's valid to scale
+    // TODO(Gustl22): check if it's valid to scale
     if (_DurationPickerModel.durationPickerModeOf(context) == DurationPickerMode.hms) {
       height = defaultTheme.hourMinuteInputSize.height;
       // Use smaller font for hms. `hourMinuteTextStyle` is not consistent across entry modes.
@@ -473,14 +473,13 @@ class _HourControl extends StatelessWidget {
               isSelected: _DurationPickerModel.durationModeOf(context) == _DurationMode.hour,
               text: formattedHour,
               onTap: () => _DurationPickerModel.setDurationMode(context, _DurationMode.hour),
-              onDoubleTap:
-                  _DurationPickerModel.of(
-                    context,
-                    _DurationPickerAspect.onHourDoubleTapped,
-                  ).onHourDoubleTapped,
+              onDoubleTap: _DurationPickerModel.of(
+                context,
+                _DurationPickerAspect.onHourDoubleTapped,
+              ).onHourDoubleTapped,
             ),
           ),
-          // TODO: is this practicable to state the unit here?
+          // TODO(Gustl22): is this practicable to state the unit here?
           ExcludeSemantics(
             child: Text(
               /*widget.hourLabelText ??*/
@@ -539,7 +538,7 @@ class _TimeSelectorSeparator extends StatelessWidget {
       states,
     ).copyWith(color: effectiveTextColor);
 
-    // TODO: needs _TimePickerModel to resolve font size correctly.
+    // TODO(Gustl22): needs _TimePickerModel to resolve font size correctly.
     final TextStyle effectiveHourMinuteStyle = MaterialStateProperty.resolveAs<TextStyle>(
       _DurationPickerModel.themeOf(context).hourMinuteTextStyle ??
           _DurationPickerModel.defaultThemeOf(context).hourMinuteTextStyle,
@@ -559,7 +558,7 @@ class _TimeSelectorSeparator extends StatelessWidget {
         ); // Display medium
     }
 
-    // TODO: check if it's valid to scale, also it isn't scaled in input dialog.
+    // TODO(Gustl22): check if it's valid to scale, also it isn't scaled in input dialog.
     if (_DurationPickerModel.durationPickerModeOf(context) == DurationPickerMode.hms) {
       height = defaultTheme.hourMinuteInputSize.height;
       // Use smaller font for hms. `hourMinuteTextStyle` is not consistent across entry modes.
@@ -624,14 +623,13 @@ class _MinuteControl extends StatelessWidget {
               isSelected: _DurationPickerModel.durationModeOf(context) == _DurationMode.minute,
               text: formattedMinute,
               onTap: () => _DurationPickerModel.setDurationMode(context, _DurationMode.minute),
-              onDoubleTap:
-                  _DurationPickerModel.of(
-                    context,
-                    _DurationPickerAspect.onMinuteDoubleTapped,
-                  ).onMinuteDoubleTapped,
+              onDoubleTap: _DurationPickerModel.of(
+                context,
+                _DurationPickerAspect.onMinuteDoubleTapped,
+              ).onMinuteDoubleTapped,
             ),
           ),
-          // TODO: is this practicable to state the unit here?
+          // TODO(Gustl22): is this practicable to state the unit here?
           ExcludeSemantics(
             child: Text(
               /*widget.minuteLabelText ??*/
@@ -686,19 +684,17 @@ class _SecondControl extends StatelessWidget {
             child: _DurationControl(
               isSelected: _DurationPickerModel.durationModeOf(context) == _DurationMode.second,
               text: formattedSecond,
-              onTap:
-                  Feedback.wrapForTap(
-                    () => _DurationPickerModel.setDurationMode(context, _DurationMode.second),
-                    context,
-                  )!,
-              onDoubleTap:
-                  _DurationPickerModel.of(
-                    context,
-                    _DurationPickerAspect.onSecondDoubleTapped,
-                  ).onSecondDoubleTapped,
+              onTap: Feedback.wrapForTap(
+                () => _DurationPickerModel.setDurationMode(context, _DurationMode.second),
+                context,
+              )!,
+              onDoubleTap: _DurationPickerModel.of(
+                context,
+                _DurationPickerAspect.onSecondDoubleTapped,
+              ).onSecondDoubleTapped,
             ),
           ),
-          // TODO: is this practicable to state the unit here?
+          // TODO(Gustl22): is this practicable to state the unit here?
           ExcludeSemantics(
             child: Text(
               /*widget.secondLabelText ??*/
@@ -1038,8 +1034,7 @@ class _DialState extends State<_Dial> with SingleTickerProviderStateMixin {
           case _HourDialType.twentyFourHour:
             newHour = (fraction * Duration.hoursPerDay).round() % Duration.hoursPerDay;
           case _HourDialType.twentyFourHourDoubleRing:
-            newHour =
-                (fraction * DurationExtension.hoursPerPeriod).round() %
+            newHour = (fraction * DurationExtension.hoursPerPeriod).round() %
                 DurationExtension.hoursPerPeriod;
             if (radius < 0.5) {
               newHour = newHour + DurationExtension.hoursPerPeriod;
@@ -1536,7 +1531,7 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_selectedDuration, 'selected_time');
+    registerForRestoration(_selectedDuration, 'selected_duration');
     registerForRestoration(hourHasError, 'hour_has_error');
     registerForRestoration(minuteHasError, 'minute_has_error');
     registerForRestoration(secondHasError, 'second_has_error');
@@ -1683,10 +1678,9 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
         timePickerTheme.hourMinuteTextStyle ?? defaultTheme.hourMinuteTextStyle;
 
     return Padding(
-      padding:
-          _DurationPickerModel.useMaterial3Of(context)
-              ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 16),
+      padding: _DurationPickerModel.useMaterial3Of(context)
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -1696,8 +1690,7 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
             ),
             child: Text(
               widget.helpText,
-              style:
-                  _DurationPickerModel.themeOf(context).helpTextStyle ??
+              style: _DurationPickerModel.themeOf(context).helpTextStyle ??
                   _DurationPickerModel.defaultThemeOf(context).helpTextStyle,
             ),
           ),
@@ -1726,8 +1719,7 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
                                 validator: _validateHour,
                                 onSavedSubmitted: _handleHourSavedSubmitted,
                                 onChanged: _handleHourChanged,
-                                semanticHintText:
-                                    widget.hourLabelText ??
+                                semanticHintText: widget.hourLabelText ??
                                     MaterialLocalizations.of(context).timePickerHourLabel,
                                 durationMode: _DurationMode.hour,
                               ),
@@ -1766,8 +1758,7 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
                               inputAction: TextInputAction.done,
                               validator: _validateMinute,
                               onSavedSubmitted: _handleMinuteSavedSubmitted,
-                              semanticHintText:
-                                  widget.minuteLabelText ??
+                              semanticHintText: widget.minuteLabelText ??
                                   MaterialLocalizations.of(context).timePickerMinuteLabel,
                               durationMode: _DurationMode.minute,
                               onChanged: _handleMinuteChanged,
@@ -1802,8 +1793,7 @@ class _TimePickerInputState extends State<_TimePickerInput> with RestorationMixi
                                 inputAction: TextInputAction.done,
                                 validator: _validateSecond,
                                 onSavedSubmitted: _handleSecondSavedSubmitted,
-                                semanticHintText:
-                                    widget.secondLabelText ??
+                                semanticHintText: widget.secondLabelText ??
                                     MaterialLocalizations.of(context).timePickerSecondLabel,
                                 durationMode: _DurationMode.second,
                               ),
@@ -1879,18 +1869,18 @@ class _DurationTextFieldState extends State<_DurationTextField> with Restoration
   @override
   void initState() {
     super.initState();
-    focusNode =
-        FocusNode()..addListener(() {
-          setState(() {
-            // Rebuild when focus changes.
-            if (kIsWeb && focusNode.hasFocus && primaryFocus?.context != null) {
-              Actions.maybeInvoke(
-                primaryFocus!.context!,
-                const SelectAllTextIntent(SelectionChangedCause.keyboard),
-              );
-            }
-          });
+    focusNode = FocusNode()
+      ..addListener(() {
+        setState(() {
+          // Rebuild when focus changes.
+          if (kIsWeb && focusNode.hasFocus && primaryFocus?.context != null) {
+            Actions.maybeInvoke(
+              primaryFocus!.context!,
+              const SelectAllTextIntent(SelectionChangedCause.keyboard),
+            );
+          }
         });
+      });
   }
 
   @override
@@ -1957,8 +1947,7 @@ class _DurationTextFieldState extends State<_DurationTextField> with Restoration
     // timePickerTheme.hourMinuteColor, use that, and otherwise use the default.
     // We ignore the value in the fillColor of the input decoration in the
     // default theme here, but it's the same as the hourMinuteColor.
-    final Color startingFillColor =
-        timePickerTheme.inputDecorationTheme?.fillColor ??
+    final Color startingFillColor = timePickerTheme.inputDecorationTheme?.fillColor ??
         timePickerTheme.hourMinuteColor ??
         defaultTheme.hourMinuteColor;
     final Color fillColor;
@@ -2128,9 +2117,9 @@ class DurationPickerDialog extends StatefulWidget {
 class _DurationPickerDialogState extends State<DurationPickerDialog> with RestorationMixin {
   late final RestorableEnum<DurationPickerEntryMode> _entryMode =
       RestorableEnum<DurationPickerEntryMode>(
-        widget.initialEntryMode,
-        values: DurationPickerEntryMode.values,
-      );
+    widget.initialEntryMode,
+    values: DurationPickerEntryMode.values,
+  );
   late final RestorableDuration _selectedDuration = RestorableDuration(
     widget.initialDuration ?? Duration.zero,
   );
@@ -2171,7 +2160,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> with Restor
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_selectedDuration, 'selected_time');
+    registerForRestoration(_selectedDuration, 'selected_duration');
     registerForRestoration(_entryMode, 'entry_mode');
     registerForRestoration(_autovalidateMode, 'autovalidate_mode');
     registerForRestoration(_orientation, 'orientation');
@@ -2274,7 +2263,7 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> with Restor
     const double fontSizeToScale = 14.0;
     final double textScaleFactor =
         MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1).scale(fontSizeToScale) /
-        fontSizeToScale;
+            fontSizeToScale;
 
     final Size timePickerSize;
     switch (_entryMode.value) {
@@ -2333,19 +2322,16 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> with Restor
               // we want to use the color as the color, which already includes
               // the opacity.
               color: theme.useMaterial3 ? null : entryModeIconColor,
-              style:
-                  theme.useMaterial3
-                      ? IconButton.styleFrom(foregroundColor: entryModeIconColor)
-                      : null,
+              style: theme.useMaterial3
+                  ? IconButton.styleFrom(foregroundColor: entryModeIconColor)
+                  : null,
               onPressed: _toggleEntryMode,
-              icon:
-                  _entryMode.value == DurationPickerEntryMode.dial
-                      ? widget.switchToInputEntryModeIcon ?? const Icon(Icons.keyboard_outlined)
-                      : widget.switchToTimerEntryModeIcon ?? const Icon(Icons.access_time),
-              tooltip:
-                  _entryMode.value == DurationPickerEntryMode.dial
-                      ? MaterialLocalizations.of(context).inputTimeModeButtonLabel
-                      : MaterialLocalizations.of(context).dialModeButtonLabel,
+              icon: _entryMode.value == DurationPickerEntryMode.dial
+                  ? widget.switchToInputEntryModeIcon ?? const Icon(Icons.keyboard_outlined)
+                  : widget.switchToTimerEntryModeIcon ?? const Icon(Icons.access_time),
+              tooltip: _entryMode.value == DurationPickerEntryMode.dial
+                  ? MaterialLocalizations.of(context).inputTimeModeButtonLabel
+                  : MaterialLocalizations.of(context).dialModeButtonLabel,
             ),
           Expanded(
             child: ConstrainedBox(
@@ -2395,11 +2381,10 @@ class _DurationPickerDialogState extends State<DurationPickerDialog> with Restor
       backgroundColor: pickerTheme.backgroundColor ?? defaultTheme.backgroundColor,
       insetPadding: EdgeInsets.symmetric(
         horizontal: 16,
-        vertical:
-            (_entryMode.value == DurationPickerEntryMode.input ||
-                    _entryMode.value == DurationPickerEntryMode.inputOnly)
-                ? 0
-                : 24,
+        vertical: (_entryMode.value == DurationPickerEntryMode.input ||
+                _entryMode.value == DurationPickerEntryMode.inputOnly)
+            ? 0
+            : 24,
       ),
       child: Padding(
         padding: pickerTheme.padding ?? defaultTheme.padding,
@@ -2587,8 +2572,8 @@ class _TimePicker extends StatefulWidget {
 class _DurationPickerState extends State<_TimePicker> with RestorationMixin {
   Timer? _vibrateTimer;
   late MaterialLocalizations localizations;
-  final RestorableEnum<_DurationMode> _durationMode = RestorableEnum<_DurationMode>(
-    _DurationMode.hour,
+  late final RestorableEnum<_DurationMode> _durationMode = RestorableEnum<_DurationMode>(
+    widget.durationPickerMode.hasHours ? _DurationMode.hour : _DurationMode.minute,
     values: _DurationMode.values,
   );
   final RestorableEnumN<_DurationMode> _lastModeAnnounced = RestorableEnumN<_DurationMode>(
@@ -2646,12 +2631,12 @@ class _DurationPickerState extends State<_TimePicker> with RestorationMixin {
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_durationMode, 'hour_minute_mode');
+    registerForRestoration(_durationMode, 'duration_mode');
     registerForRestoration(_lastModeAnnounced, 'last_mode_announced');
     registerForRestoration(_autofocusHour, 'autofocus_hour');
     registerForRestoration(_autofocusMinute, 'autofocus_minute');
     registerForRestoration(_autofocusSecond, 'autofocus_second');
-    registerForRestoration(_selectedDuration, 'selected_time');
+    registerForRestoration(_selectedDuration, 'selected_duration');
     registerForRestoration(_orientation, 'orientation');
   }
 
@@ -2740,10 +2725,9 @@ class _DurationPickerState extends State<_TimePicker> with RestorationMixin {
     assert(debugCheckHasMediaQuery(context));
     final DurationFormat durationFormat = localizations.durationFormat();
     final ThemeData theme = Theme.of(context);
-    final _TimePickerDefaults defaultTheme =
-        theme.useMaterial3
-            ? _TimePickerDefaultsM3(context, entryMode: widget.entryMode)
-            : _TimePickerDefaultsM2(context);
+    final _TimePickerDefaults defaultTheme = theme.useMaterial3
+        ? _TimePickerDefaultsM3(context, entryMode: widget.entryMode)
+        : _TimePickerDefaultsM2(context);
     final Orientation orientation = _orientation.value ?? MediaQuery.orientationOf(context);
     final HourFormat durationHour = hourDurationFormat(of: durationFormat);
     final _HourDialType hourMode = switch (durationHour) {
@@ -2758,8 +2742,7 @@ class _DurationPickerState extends State<_TimePicker> with RestorationMixin {
     switch (widget.entryMode) {
       case DurationPickerEntryMode.dial:
       case DurationPickerEntryMode.dialOnly:
-        helpText =
-            widget.helpText ??
+        helpText = widget.helpText ??
             (theme.useMaterial3
                 ? localizations.durationPickerDialHelpText
                 : localizations.durationPickerDialHelpText.toUpperCase());
@@ -2848,8 +2831,7 @@ class _DurationPickerState extends State<_TimePicker> with RestorationMixin {
         }
       case DurationPickerEntryMode.input:
       case DurationPickerEntryMode.inputOnly:
-        final String helpText =
-            widget.helpText ??
+        final String helpText = widget.helpText ??
             (theme.useMaterial3
                 ? localizations.durationPickerInputHelpText
                 : localizations.durationPickerInputHelpText.toUpperCase());
