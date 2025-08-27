@@ -54075,6 +54075,8 @@ ORIGIN: ../../../flutter/shell/platform/windows/flutter_project_bundle.h + ../..
 ORIGIN: ../../../flutter/shell/platform/windows/flutter_window.cc + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/shell/platform/windows/flutter_window.h + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/shell/platform/windows/flutter_windows.cc + ../../../flutter/LICENSE
+ORIGIN: ../../../flutter/shell/platform/windows/display_monitor.cc + ../../../flutter/LICENSE
+ORIGIN: ../../../flutter/shell/platform/windows/display_monitor.h + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/shell/platform/windows/flutter_windows_engine.cc + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/shell/platform/windows/flutter_windows_engine.h + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/shell/platform/windows/flutter_windows_internal.h + ../../../flutter/LICENSE
@@ -54290,8 +54292,6 @@ ORIGIN: ../../../flutter/vulkan/vulkan_swapchain.h + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/vulkan/vulkan_swapchain_stub.cc + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/vulkan/vulkan_utilities.cc + ../../../flutter/LICENSE
 ORIGIN: ../../../flutter/vulkan/vulkan_utilities.h + ../../../flutter/LICENSE
-ORIGIN: ../../../flutter/vulkan/vulkan_window.cc + ../../../flutter/LICENSE
-ORIGIN: ../../../flutter/vulkan/vulkan_window.h + ../../../flutter/LICENSE
 TYPE: LicenseType.bsd
 FILE: ../../../flutter/.engine-release.version
 FILE: ../../../flutter/.gemini/settings.json
@@ -57165,6 +57165,8 @@ FILE: ../../../flutter/shell/platform/windows/flutter_project_bundle.h
 FILE: ../../../flutter/shell/platform/windows/flutter_window.cc
 FILE: ../../../flutter/shell/platform/windows/flutter_window.h
 FILE: ../../../flutter/shell/platform/windows/flutter_windows.cc
+FILE: ../../../flutter/shell/platform/windows/display_monitor.cc
+FILE: ../../../flutter/shell/platform/windows/display_monitor.h
 FILE: ../../../flutter/shell/platform/windows/flutter_windows_engine.cc
 FILE: ../../../flutter/shell/platform/windows/flutter_windows_engine.h
 FILE: ../../../flutter/shell/platform/windows/flutter_windows_internal.h
@@ -57380,8 +57382,6 @@ FILE: ../../../flutter/vulkan/vulkan_swapchain.h
 FILE: ../../../flutter/vulkan/vulkan_swapchain_stub.cc
 FILE: ../../../flutter/vulkan/vulkan_utilities.cc
 FILE: ../../../flutter/vulkan/vulkan_utilities.h
-FILE: ../../../flutter/vulkan/vulkan_window.cc
-FILE: ../../../flutter/vulkan/vulkan_window.h
 ----------------------------------------------------------------------------------------------------
 Copyright 2013 The Flutter Authors. All rights reserved.
 
