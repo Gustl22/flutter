@@ -43,6 +43,7 @@ New-Item -Path "$flutterRoot/bin/cache" -ItemType Directory -Force | Out-Null
 # If set, it takes precedence over any other source of engine version.
 if (![string]::IsNullOrEmpty($env:FLUTTER_PREBUILT_ENGINE_VERSION)) {
   $engineVersion = $env:FLUTTER_PREBUILT_ENGINE_VERSION
+  Write-Host "FLUTTER_PREBUILT_ENGINE_VERSION: $engineVersion"
 
 # Check if bin/internal/engine.version exists and is a tracked file in git.
 #
@@ -52,16 +53,20 @@ if (![string]::IsNullOrEmpty($env:FLUTTER_PREBUILT_ENGINE_VERSION)) {
 # If set, it takes precedence over the git hash.
 } elseif (git -C "$flutterRoot" ls-files bin/internal/engine.version) {
   $engineVersion = Get-Content -Path "$flutterRoot/bin/internal/engine.version"
+  Write-Host "Pinned version: $engineVersion"
 
 # Fallback to using git to triangulate which upstream/master (or origin/master)
 # the current branch is forked from, which would be the last version of the
 # engine artifacts built from CI.
 } else {
   $engineVersion = Invoke-Expression "& '$flutterRoot/bin/internal/content_aware_hash.ps1'"
+  Write-Host "Content-aware: $engineVersion"
 }
 
 # Write the engine version out so downstream tools know what to look for.
 Set-Content -Path $flutterRoot/bin/cache/engine.stamp -Value $engineVersion -Encoding Ascii
+
+Write-Host "Realm: $env:FLUTTER_REALM"
 
 # The realm on CI is passed in.
 if ($env:FLUTTER_REALM) {

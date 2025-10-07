@@ -55,6 +55,7 @@ $dartZipNameArm64 = "dart-sdk-windows-arm64.zip"
 $dartZipName = $dartZipNameX64
 if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
     $dartSdkArm64Url = "$dartSdkBaseUrl/flutter_infra_release/flutter/$engineVersion/$dartZipNameArm64"
+    Write-Host $dartSdkArm64Url
     Try {
         Invoke-WebRequest -Uri $dartSdkArm64Url -UseBasicParsing -Method Head | Out-Null
         $dartZipName = $dartZipNameArm64

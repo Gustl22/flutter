@@ -40,6 +40,11 @@ $currentBranch = (git -C "$flutterRoot" rev-parse --abbrev-ref HEAD).Trim()
 # 4. The current checkout is a shallow clone.
 # 5. There is no current branch. E.g. running on CI/CD.
 $isShallow = Test-Path -Path (Join-Path "$flutterRoot" ".git/shallow")
+
+Write-Host "Content-aware isShallow: $isShallow"
+Write-Host "Content-aware branch: $currentBranch"
+Write-Host "Content-aware Luci: $env:LUCI_CI"
+
 if (($currentBranch -ne "main") -and
     ($currentBranch -ne "master") -and
     ($currentBranch -ne "stable") -and
@@ -48,6 +53,8 @@ if (($currentBranch -ne "main") -and
     (-not $currentBranch.StartsWith("gh-readonly-queue/master/pr-")) -and
     (-not ($currentBranch -like "flutter-*-candidate.*")) -and
     (-not $isShallow)) {
+
+    Write-Host "Got in if clause"
 
     # This is a development branch. Find the merge-base.
     # We will fallback to origin if upstream is not detected.
@@ -60,11 +67,14 @@ if (($currentBranch -ne "main") -and
 
     # Try to find the merge-base with master, then main.
     $mergeBase = (git -C "$flutterRoot" merge-base HEAD "$remote/master" 2>$null).Trim()
+
+    Write-Host "mergeBase: $mergeBase"
     if ([string]::IsNullOrEmpty($mergeBase)) {
         $mergeBase = (git -C "$flutterRoot" merge-base HEAD "$remote/main" 2>$null).Trim()
     }
     $ErrorActionPreference = "Stop"
 
+    Write-Host "mergeBase2: $mergeBase"
     if ($mergeBase) {
         $baseRef = "$mergeBase"
     }
