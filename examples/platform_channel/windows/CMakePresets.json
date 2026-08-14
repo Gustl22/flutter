@@ -1,0 +1,48 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "FLUTTER_TARGET_PLATFORM": "windows-arm64"
+      }
+    },
+    {
+      "name": "ninja-debug",
+      "displayName": "Ninja - Debug",
+      "description": "Single-config Ninja build. Run 'flutter build windows --config-only' at least once first so flutter/ephemeral exists.",
+      "inherits": "base",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/cmake-build-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_MAKE_PROGRAM": "C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
+      }
+    },
+    {
+      "name": "ninja-profile",
+      "displayName": "Ninja - Profile",
+      "inherits": "ninja-debug",
+      "binaryDir": "${sourceDir}/cmake-build-profile",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Profile"
+      }
+    },
+    {
+      "name": "ninja-release",
+      "displayName": "Ninja - Release",
+      "inherits": "ninja-debug",
+      "binaryDir": "${sourceDir}/cmake-build-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ]
+}

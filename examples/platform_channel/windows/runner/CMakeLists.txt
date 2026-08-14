@@ -38,3 +38,18 @@ target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
+
+# CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD (set in the top-level CMakeLists.txt)
+# only affects the Visual Studio generator. Single-config generators (e.g.
+# Ninja) have no equivalent, so building ${BINARY_NAME} alone would leave the
+# .exe without the DLL/assets it needs to run. Run the install step itself as
+# a post-build step so those generators end up with the same runnable,
+# in-place bundle. (Must live here, not the top-level CMakeLists.txt: a
+# TARGET-form POST_BUILD command can only be attached from the directory that
+# created the target.)
+if(NOT CMAKE_GENERATOR MATCHES "Visual Studio")
+  add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} --install "${CMAKE_BINARY_DIR}" --config $<CONFIG>
+    COMMENT "Installing runtime dependencies next to ${BINARY_NAME}"
+  )
+endif()
